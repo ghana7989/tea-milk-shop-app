@@ -29,7 +29,8 @@ const Header = () => {
 	return (
 		<SafeAreaView
 			style={{
-				height: 150,
+				alignItems: 'center',
+				height: 100,
 				width: '100%',
 				backgroundColor: COLORS.purple,
 				flexDirection: 'row',
@@ -39,6 +40,7 @@ const Header = () => {
 				style={{
 					flex: 1,
 					paddingLeft: SIZES.padding,
+					paddingBottom: SIZES.padding,
 				}}
 			>
 				<Text
@@ -69,6 +71,7 @@ const Header = () => {
 					height: 40,
 					borderRadius: 20,
 					backgroundColor: COLORS.lightPurple,
+					marginBottom: SIZES.padding,
 				}}
 			>
 				{/* Sun */}

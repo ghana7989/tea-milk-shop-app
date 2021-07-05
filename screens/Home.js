@@ -1,19 +1,32 @@
-import React from 'react'
+import React, {useCallback, useRef} from 'react'
 import {
 	View,
 	StyleSheet,
 	ScrollView,
 	TouchableOpacity,
 	Text,
+	ImageBackground,
+	Animated,
+	Image,
+	Platform,
 } from 'react-native'
-import ImageBackground from 'react-native/Libraries/Image/ImageBackground'
 import {useSelector} from 'react-redux'
+import AppButton from '../components/AppButton'
 import Header from '../components/Header'
-import {COLORS, FONTS, icons, SIZES} from '../constants'
+import Tabs from '../components/Tabs'
+import {COLORS, dummyData, FONTS, icons, images, SIZES} from '../constants'
 
 const Home = ({navigation}) => {
-	const {error, appTheme} = useSelector(state => state?.theme)
+	const promoScrollViewRef = useRef()
+	const onPromoTabPress = useCallback(promoIndex => {
+		promoScrollViewRef.current.scrollToOffset({
+			offset: promoIndex * SIZES.width,
+		})
+	})
 
+	const {error, appTheme} = useSelector(state => state?.theme)
+	const scrollX = useRef(new Animated.Value(0)).current
+	const tabPosition = new Animated.divide(scrollX, SIZES.width)
 	function renderAvailableRewards() {
 		return (
 			<TouchableOpacity
@@ -72,7 +85,149 @@ const Home = ({navigation}) => {
 					</ImageBackground>
 				</View>
 				{/* Reward Details Section */}
+				<View
+					style={{
+						flex: 1,
+						backgroundColor: COLORS.lightPink,
+						marginLeft: -10,
+						borderRadius: 15,
+						alignItems: 'center',
+						justifyContent: 'center',
+					}}
+				>
+					<Text
+						style={{
+							color: COLORS.primary,
+							...FONTS.h2,
+							fontSize: 26,
+						}}
+					>
+						Available Rewards
+					</Text>
+					<View
+						style={{
+							marginTop: 5,
+							padding: SIZES.base,
+							borderRadius: SIZES.radius * 2,
+							backgroundColor: COLORS.primary,
+						}}
+					>
+						<Text
+							style={{
+								color: COLORS.white,
+								letterSpacing: 2.7,
+								...FONTS.h3,
+							}}
+						>
+							270 points - ₹500 off
+						</Text>
+					</View>
+				</View>
 			</TouchableOpacity>
+		)
+	}
+	function renderPromoDeals() {
+		return (
+			<View
+				style={{
+					flex: 1,
+					alignItems: 'center',
+				}}
+			>
+				{/* Tabs */}
+				<Tabs
+					tabPosition={tabPosition}
+					appTheme={appTheme}
+					scrollX={scrollX}
+					onPromoTabPress={onPromoTabPress}
+				/>
+				{/* Details */}
+				<Animated.FlatList
+					ref={promoScrollViewRef}
+					data={dummyData.promos}
+					horizontal
+					pagingEnabled
+					scrollEventThrottle={16}
+					snapToAlignment='center'
+					showsHorizontalScrollIndicator={false}
+					onScroll={Animated.event(
+						[
+							{
+								nativeEvent: {
+									contentOffset: {x: scrollX},
+								},
+							},
+						],
+						{
+							useNativeDriver: false,
+						},
+					)}
+					keyExtractor={item => item.id.toString()}
+					renderItem={({item, index}) => {
+						return (
+							<View
+								style={{
+									flex: 1,
+									alignItems: 'center',
+									width: SIZES.width,
+									paddingTop: Platform.OS === 'ios' ? SIZES.padding : 0,
+								}}
+							>
+								{/* Image */}
+								<Image
+									source={images.strawberryBackground}
+									resizeMode='contain'
+									style={{
+										width: '100%',
+									}}
+								/>
+								{/* Name */}
+								<Text
+									style={{
+										color: COLORS.red,
+										...FONTS.h1,
+									}}
+								>
+									{item.name}
+								</Text>
+								{/* Description */}
+								<Text
+									style={{
+										marginTop: 3,
+										color: appTheme.textColor,
+										...FONTS.body4,
+									}}
+								>
+									{item.description}
+								</Text>
+								{/* Calories */}
+								<Text
+									style={{
+										marginTop: 3,
+										color: appTheme.textColor,
+										...FONTS.body4,
+									}}
+								>
+									{item.calories}
+								</Text>
+								{/* Button */}
+								<AppButton
+									onPress={() => navigation.navigate('Location')}
+									label='Order Now'
+									isPrimaryButton={true}
+									containerStyle={{
+										marginTop: 10,
+										paddingHorizontal: SIZES.padding,
+										paddingVertical: SIZES.base,
+										borderRadius: SIZES.radius * 2,
+									}}
+									labelStyle={{...FONTS.h3}}
+								/>
+							</View>
+						)
+					}}
+				/>
+			</View>
 		)
 	}
 
@@ -94,6 +249,7 @@ const Home = ({navigation}) => {
 				{/* Rewards Section */}
 				{renderAvailableRewards()}
 				{/* Promo Section */}
+				{renderPromoDeals()}
 			</ScrollView>
 		</View>
 	)
