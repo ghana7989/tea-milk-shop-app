@@ -1,9 +1,6 @@
 import React from 'react'
 import {Image, Platform} from 'react-native'
-import {
-	createBottomTabNavigator,
-	BottomTabBar,
-} from '@react-navigation/bottom-tabs'
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 
 import {Home, Rewards} from '../screens'
 import {COLORS, SIZES, icons} from '../constants'

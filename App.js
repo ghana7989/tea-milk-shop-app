@@ -21,7 +21,7 @@ const App = () => {
 					screenOptions={{
 						headerShown: false,
 					}}
-					initialRouteName={'Home'}
+					initialRouteName='Location'
 				>
 					<Stack.Screen name='Home' component={Tabs} />
 
