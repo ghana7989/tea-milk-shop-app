@@ -1,5 +1,6 @@
 import React from 'react'
 import {Image, TouchableOpacity} from 'react-native'
+import Pressable from 'react-native/Libraries/Components/Pressable/Pressable'
 import {COLORS} from '../constants'
 
 const IconButton = ({iconStyle, onPress, icon, containerStyle}) => {
